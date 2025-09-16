@@ -1,1 +1,11 @@
 id,channel,subject,body,gold_category,gold_action
+1,email,Charged twice,"I was billed two times for my Data Science Bootcamp purchase.",billing,refund_init
+2,chat,Course locked,"I bought the Python Foundations course but I can’t access it.",course_access,log_resolution
+3,email,Password reset failed,"The reset link I got from LearnSmart expired before I could use it.",technical,resend_reset_link
+4,email,Certificate missing,"I completed UX Design Basics but no certificate has been issued.",certificate,escalate_human
+5,chat,AI course request,"Do you plan to launch a Generative AI course soon?",other,escalate_human
+6,email,Refund not received,"I requested a refund last week, but nothing has arrived.",billing,escalate_human
+7,chat,Video not loading,"Lessons in Machine Learning crash after a few seconds of play.",course_access,escalate_human
+8,email,App bug,"The LearnSmart mobile app keeps showing an unknown error.",technical,escalate_human
+9,email,Certificate name issue,"My name is misspelled on the Data Science Bootcamp certificate.",certificate,escalate_human
+10,chat,Discount question,"Do you offer student discounts on courses?",other,log_resolution
