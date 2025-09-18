@@ -1,16 +1,13 @@
+# app/services/rag.py
 from pathlib import Path
-#from langchain_community.vectorstores import Chroma
-#from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_chroma import Chroma
+from langchain_ollama import OllamaEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from dotenv import load_dotenv
-load_dotenv()  # take environment variables from .env.
-
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 DB_DIR = DATA / "vectordb"
+COLLECTION = "learnsmart_kb"
 
 def _load_md():
     texts = []
@@ -25,16 +22,23 @@ def build_kb():
     splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=60)
     docs = splitter.create_documents([text])
 
-    # Use a local embedding model served by Ollama
-    embeddings = OllamaEmbeddings(model="nomic-embed-text")  # or "all-minilm", "mxbai-embed-large"
-
-    vs = Chroma.from_documents(docs, embeddings, persist_directory=str(DB_DIR))
-    vs.persist()
-    return vs
+    embeddings = OllamaEmbeddings(model="nomic-embed-text")  # or all-minilm / mxbai-embed-large
+    # NOTE: langchain-chroma auto-persists when persist_directory is set.
+    Chroma.from_documents(
+        documents=docs,
+        embedding=embeddings,
+        persist_directory=str(DB_DIR),
+        collection_name=COLLECTION,
+    )
+    return True
 
 def get_kb():
     embeddings = OllamaEmbeddings(model="nomic-embed-text")
-    return Chroma(persist_directory=str(DB_DIR), embedding_function=embeddings)
+    return Chroma(
+        persist_directory=str(DB_DIR),
+        embedding_function=embeddings,
+        collection_name=COLLECTION,
+    )
 
 def retrieve(query: str, k: int = 4):
     return get_kb().similarity_search(query, k=k)
